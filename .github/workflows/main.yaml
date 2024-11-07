@@ -57,5 +57,5 @@ jobs:
           kustomize edit set image FRONT_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
           kustomize edit set image BACKEND_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA-BACKEND
           kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment $DEPLOYMENT
+          kubectl rollout status deployment todo-front-deployment.yaml
           kubectl get services -o wide
