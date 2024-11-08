@@ -55,7 +55,7 @@ jobs:
         uses: nhedger/setup-sops@v2
 
       - name: Setup age
-        uses: alessiodionisi/setup-age-action@v1
+        uses: alessiodionisi/setup-age-action@v1.3.0
 
       - name: Deploy using secrets
         uses: LNSD/sops-exec-action@v1
