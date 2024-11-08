@@ -67,7 +67,6 @@ jobs:
         run: |-
           kubectl create namespace $BRANCH || true
           kubectl config set-context --current --namespace=$BRANCH
-          cd manifests
           kustomize edit set namespace $BRANCH
           kustomize edit set image FRONT_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
           kustomize edit set image BACKEND_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA-BACKEND
