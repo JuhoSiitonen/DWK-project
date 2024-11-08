@@ -57,22 +57,23 @@ jobs:
       - name: Setup age
         uses: alessiodionisi/setup-age-action@v1.3.0
 
-      - name: Deploy using secrets
-        uses: LNSD/sops-exec-action@v1
+      - name: Decrypt secrets
         env:
           SOPS_AGE_KEY: ${{ secrets.AGE_SECRET_KEY }}
-        with:
-          env_file: ./manifests/postgres-secret.enc.yaml
-          run: |-
-            cd manifests
-            sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml
-            cd ..
-            kubectl create namespace $BRANCH || true
-            kubectl config set-context --current --namespace=$BRANCH
-            kustomize edit set namespace $BRANCH
-            kustomize edit set image FRONT_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
-            kustomize edit set image BACKEND_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA-BACKEND
-            kustomize build . | kubectl apply -f -
-            kubectl get services -o wide
-            cd manifests
-            rm postgres-secret.yaml
+        run: |
+          sops --decrypt ./manifests/postgres-secret.enc.yaml > ./manifests/postgres-secret.yaml
+
+      - name: Deploy to GKE
+        run: |-
+          kubectl create namespace $BRANCH || true
+          kubectl config set-context --current --namespace=$BRANCH
+          cd manifests
+          kustomize edit set namespace $BRANCH
+          kustomize edit set image FRONT_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
+          kustomize edit set image BACKEND_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA-BACKEND
+          kustomize build . | kubectl apply -f -
+          kubectl get services -o wide
+
+      - name: Clean up decrypted secrets
+        if: always()
+        run: rm ./manifests/postgres-secret.yaml
