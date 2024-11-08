@@ -65,7 +65,7 @@ jobs:
           env_file: ./manifests/postgres-secret.enc.yaml
           run: |-
             cd manifests
-            sops --decrypt postgres-secret.enc.yaml > secret.yaml
+            sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml
             cd ..
             kubectl create namespace $BRANCH || true
             kubectl config set-context --current --namespace=$BRANCH
@@ -74,4 +74,5 @@ jobs:
             kustomize edit set image BACKEND_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA-BACKEND
             kustomize build . | kubectl apply -f -
             kubectl get services -o wide
-            rm secret.yaml
+            cd manifests
+            rm postgres-secret.yaml
