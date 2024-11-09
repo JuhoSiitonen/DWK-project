@@ -12,6 +12,7 @@ resources:
   - manifests/todo-backend-deployment.yaml
   - manifests/ingress.yaml
   - manifests/cronjob.yaml
+  - manifests/pg_dump-cronjob.yaml
 images:
 - name: FRONT_IMAGE
   newName: juhosii/devops-kubernetes
