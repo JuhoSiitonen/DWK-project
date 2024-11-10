@@ -33,7 +33,10 @@ spec:
               - /bin/sh
               - -c
               - |
-                apt-get update && apt-get install -y postgresql-client && \
+                echo "deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+                wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+                
+                apt-get update && apt-get install -y postgresql-client-17 && \
                 
                 export BACKUP_FILE="/tmp/db_backup_$(date +\%Y\%m\%d\%H\%M\%S).sql" && \
 
