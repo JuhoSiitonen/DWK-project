@@ -47,7 +47,9 @@ spec:
 
                 echo "Database dump success" && \
 
-                gsutil cp $BACKUP_FILE gs://devops-kubernetes-backups/ && \
+                gsutil ls gs://devops-kubernetes-backups
+
+                gsutil -D cp $BACKUP_FILE gs://devops-kubernetes-backups/ && \
 
                 rm $BACKUP_FILE
           restartPolicy: OnFailure
