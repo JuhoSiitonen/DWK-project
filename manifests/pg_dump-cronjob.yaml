@@ -45,10 +45,6 @@ spec:
 
                 pg_dump -h postgres-service -U $POSTGRES_USER -d projectdb > $BACKUP_FILE && \
 
-                echo "Database dump success" && \
-
-                gsutil ls gs://devops-kubernetes-backups
-
                 gsutil -D cp $BACKUP_FILE gs://devops-kubernetes-backups/ && \
 
                 rm $BACKUP_FILE
